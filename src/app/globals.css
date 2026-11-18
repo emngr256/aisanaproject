@@ -9,6 +9,30 @@
 /* Readable secondary copy on pale surfaces. */ .hero p,.page-heading p,.card-heading p,.entry-copy p,.form-intro,.result-summary,.recommendation p,.form-privacy,.stat-foot,.sample-notice,.focus-card p,.profile-card>p,.lifestyle>p{color:#82758e}.hero-caption,.textarea-footer,.range-labels,.entry-date,.chart-footer,footer{color:#8e809b}
 /* Preferences, report and accessible dark surfaces */
 .settings-trigger{padding:8px 11px;gap:7px}.preferences-panel{display:grid;gap:23px}.preferences-panel label,.tone-picker{display:flex;flex-direction:column;gap:9px;font-size:13px;color:var(--ink)}select{background:var(--surface);color:var(--ink);border:1px solid var(--border);padding:11px 12px;border-radius:9px;max-width:100%;font:inherit;cursor:pointer}.tone-picker{margin:0 0 22px}.tone-picker small{font-size:11px;line-height:1.6;color:var(--muted)}.preferences-panel .tone-picker{margin:0}.preferences-panel .segmented{display:flex;gap:8px}.preferences-panel .segmented button{flex:1}.saved-label{font-size:11px;color:#6c8964}.week-banner{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(120deg,#f0eaf7,#f4f7ef);padding:28px;border:1px solid var(--border);border-radius:15px;margin-bottom:22px}.week-banner h2{font-size:27px;margin:15px 0 10px}.week-banner p{font-size:12px;color:#82758e;line-height:1.8;max-width:600px}.week-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.week-change{margin:25px 0;font-size:32px;display:flex;align-items:center;gap:8px;color:#9476b6}.week-change p{font-size:14px;line-height:1.8}.week-trigger{display:flex;justify-content:space-between;gap:15px;line-height:1.6;padding:12px 0;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}.week-trigger b{color:var(--ink)}.week-focus{display:block!important}.week-focus p{max-width:none}.week-focus .recommendation{margin-top:28px}.contradiction-box{border:1px solid #e4be86;border-radius:12px;background:#fff8ed;padding:18px;margin:20px 0;color:#806235}.contradiction-box h3{display:flex;gap:8px;align-items:center;font-size:14px}.contradiction-box p,.contradiction-box li{font-size:12px;line-height:1.8;margin-top:10px}.contradiction-box ul{list-style:disc;padding-left:20px}.contradiction-box label{display:flex;gap:9px;align-items:center;margin-top:15px;font-size:12px;font-weight:600}.contradiction-box input{accent-color:var(--purple);width:17px;height:17px}.sidebar-note{margin-top:32px}.topbar-right{gap:14px}.sidebar .nav-item{white-space:normal;line-height:1.4}
+.avatar-img{border-radius:50%;object-fit:cover;display:block}
+.local-profile{cursor:pointer;transition:background .18s,border-color .18s;border-radius:10px}
+.local-profile:hover{background:var(--lavender)}
+.avatar-btn{cursor:pointer;border-radius:50%;padding:0;display:grid;place-items:center}
+.auth-pill-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer}
+.auth-modal-content{display:flex;flex-direction:column;gap:16px}
+.account-card{display:flex;align-items:center;gap:16px;background:var(--lavender);border:1px solid var(--border);padding:18px;border-radius:14px}
+.account-card .avatar,.account-card .avatar-img{width:48px;height:48px;font-size:19px}
+.account-info h3{font-size:15px;margin-bottom:4px;color:var(--ink)}
+.account-info p{font-size:12px;color:var(--muted)}
+.account-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#4285f4;font-weight:500;margin-top:6px}
+.auth-header-card{text-align:center;padding:12px 10px 4px}
+.auth-icon-circle{width:60px;height:60px;border-radius:50%;background:var(--lavender);display:grid;place-items:center;margin:0 auto 16px}
+.auth-header-card h2{font-size:21px;color:var(--ink);margin-bottom:8px}
+.auth-actions{display:flex;flex-direction:column;gap:13px;margin:8px 0}
+.google-signin-btn{display:inline-flex;align-items:center;justify-content:center;gap:11px;padding:13px 18px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 1px 3px rgba(60,64,67,.08);transition:all .18s;text-decoration:none;width:100%}
+.google-signin-btn:hover{background:#f8fafd;border-color:#c6cacc;box-shadow:0 1px 5px rgba(60,64,67,.18)}
+.auth-divider{display:flex;align-items:center;text-align:center;color:var(--muted);font-size:11px;margin:4px 0}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;border-bottom:1px solid var(--border)}
+.auth-divider span{padding:0 10px}
+[data-theme="dark"] .google-signin-btn{background:#2a2434;color:#eee8f4;border-color:#4d3e5e}
+[data-theme="dark"] .google-signin-btn:hover{background:#352c42;border-color:#5e4c73}
+[data-theme="dark"] .auth-icon-circle{background:#3a2d49}
+[data-theme="dark"] .account-card{background:#2d2438;border-color:#483858}
 :root[data-theme="dark"]{color-scheme:dark;--ink:#eee8f4;--muted:#b5a9c2;--border:#393140;--surface:#241f2c;--background:#17141e;--lavender:#332840;--purple:#ad8ed1;--purple-dark:#b69bd5}
 [data-theme="dark"] .sidebar,[data-theme="dark"] .card,[data-theme="dark"] .modal,[data-theme="dark"] .toast,[data-theme="dark"] .secondary{background:var(--surface);border-color:var(--border);color:var(--ink)}
 [data-theme="dark"] .topbar{background:#1e1926;border-color:var(--border)}[data-theme="dark"] .brand{color:#eee4fc}[data-theme="dark"] .brand-mark,[data-theme="dark"] .avatar,[data-theme="dark"] .nav-item.active,[data-theme="dark"] .tag,[data-theme="dark"] .segmented,[data-theme="dark"] .recommendation>span{background:#3a2d49;color:#d2b6ed}

@@ -212,7 +212,25 @@ ML-модель анализирует текст прямо в браузере
 Отредактируй текст или ползунки, либо подтверди данные.|Мәтінді не жүгірткілерді түзет немесе деректерді раста.|Edit the text or sliders, or confirm your details.
 Уточнения подтверждены пользователем.|Нақтылауларды пайдаланушы растады.|Clarifications confirmed by the user.
 Опиши ситуацию чуть подробнее — хотя бы 15 символов.|Жағдайды толығырақ жаз — кемінде 15 таңба.|Describe your situation in at least 15 characters.
-Проверь текст и параметры дня.|Мәтін мен күн мәндерін тексер.|Check your text and daily values.`;
+Проверь текст и параметры дня.|Мәтін мен күн мәндерін тексер.|Check your text and daily values.
+Войти через Google|Google арқылы кіру|Sign in with Google
+Войти|Кіру|Sign in
+Выйти из аккаунта|Тіркелгіден шығу|Sign out of account
+Выйти|Шығу|Sign out
+Твой Google аккаунт|Сенің Google тіркелгің|Your Google account
+Вход в Aisana|Aisana-ға кіру|Sign in to Aisana
+Продолжить с Google|Google арқылы жалғастыру|Continue with Google
+Вход выполнен через Google|Google арқылы кірдіңіз|Signed in with Google
+Гостевой режим|Қонақ режимі|Guest mode
+Успешный вход через Google!|Google арқылы сәтті кірдіңіз!|Signed in with Google successfully!
+Google OAuth не настроен. Добавь GOOGLE_CLIENT_ID в .env|Google OAuth бапталмаған. GOOGLE_CLIENT_ID мәнін .env файлына қосыңыз|Google OAuth not configured. Add GOOGLE_CLIENT_ID to .env
+Не удалось выполнить вход через Google|Google арқылы кіру сәтсіз аяқталды|Failed to sign in with Google
+Тестовый вход (без ключей Google)|Сынақ кіру (Google кілттерінсіз)|Test sign-in (without Google keys)
+Мы получаем только твоё имя, email и аватар. Никакие пароли не передаются.|Біз тек аты-жөніңізді, электрондық поштаңызды және аватарыңызды аламыз. Құпиясөздер берілмейді.|We only receive your name, email, and avatar. No passwords are shared.
+Войди с Google аккаунтом, чтобы сохранить своё пространство.|Өз кеңістігіңді сақтау үшін Google тіркелгісімен кір.|Sign in with your Google account to save your space.
+Записи дневника привязаны к твоей сессии.|Күнделік жазбалары сессияңа байланыстырылған.|Journal entries are linked to your session.
+Аккаунт|Тіркелгі|Account
+Выход выполнен|Жүйеден шықтыңыз|Signed out successfully`;
 export const translations: Record<string, [string,string]> = Object.fromEntries(rows.split('\n').map(row=>{const [ru,kk,en]=row.split('|');return [ru,[kk,en]];}));
 translations['Обученный классификатор определяет вероятную тему текста. Условный индекс рассчитывается по настроению, сну, времени учёбы и словам о сроках. Он не измеряет продуктивность; физическая активность в формулу не входит. Модель не является психологическим тестом и не генерирует свободный ответ как чат-бот.']=['Үйретілген жіктеуіш мәтіннің ықтимал тақырыбын анықтайды. Шартты индекс көңіл күйге, ұйқыға, оқу уақытына және мерзім туралы сөздерге негізделеді. Ол өнімділікті өлшемейді; қозғалыс формулаға кірмейді. Бұл психологиялық тест немесе еркін жауап беретін чат-бот емес.','The trained classifier suggests a topic. The estimated index uses mood, sleep, study time and deadline mentions. It does not measure productivity; physical activity is not part of the formula. This is not a psychological test or a free-form chatbot.'];
 translations['Новые записи анализируются в браузере на трёх языках. Модель обучена на 80 искусственных примерах и может ошибаться. Для открытия сайта нужен локальный сервер; интернет для анализа не требуется.']=['Жаңа жазбалар браузерде үш тілде талданады. Модель 80 жасанды мысалда үйретілген және қателесуі мүмкін. Сайтты ашу үшін жергілікті сервер керек; талдауға интернет қажет емес.','New entries are analysed in your browser in three languages. The model was trained on 80 synthetic examples and can make mistakes. A local server is needed to open the site; analysis requires no internet.'];

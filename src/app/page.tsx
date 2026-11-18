@@ -13,6 +13,8 @@ import { WeeklyReport } from '@/components/weekly-report';
 import { PreferencesPanel, TonePicker } from '@/components/preferences-panel';
 import { Settings, CalendarDays, AlertTriangle } from 'lucide-react';
 import { createEntryId } from '@/lib/entry-id';
+import { useAuth } from '@/lib/auth-client';
+import { GoogleIcon, AuthModalContent } from '@/components/auth-modal';
 
 type Tab = 'overview' | 'journal' | 'insights' | 'profile' | 'weekly';
 const tabs = [{id:'weekly',name:'Моя неделя',icon:CalendarDays},{ id: 'overview', name: 'Мой обзор', icon: LayoutDashboard }, { id: 'journal', name: 'Дневник состояния', icon: BookOpen }, { id: 'insights', name: 'Моя динамика', icon: TrendingUp }, { id: 'profile', name: 'Профиль стресса', icon: UserRound }] as const;
@@ -31,12 +33,29 @@ export default function Home() {
   const [detail, setDetail] = useState<Entry | null>(null);
   const [help, setHelp] = useState(false);
   const [settings, setSettings] = useState(false);
+  const [authModal, setAuthModal] = useState(false);
+  const { user, checkSession } = useAuth();
   const preferences = usePreferences();
   useEffect(()=>{ usePreferences.persist.rehydrate(); },[]);
   useEffect(()=>{document.documentElement.dataset.theme=preferences.theme;document.documentElement.lang=preferences.language;},[preferences.theme,preferences.language]);
   const [notification, setNotification] = useState('');
   const [period, setPeriod] = useState(7);
-  useEffect(() => { useJournal.persist.rehydrate(); init(); setReady(true); }, [init]);
+  useEffect(() => { useJournal.persist.rehydrate(); init(); setReady(true); checkSession(); }, [init, checkSession]);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('auth_success')) {
+      setNotification(tr("Успешный вход через Google!"));
+      window.history.replaceState({}, '', window.location.pathname);
+      checkSession();
+    } else if (params.get('auth_error') === 'google_not_configured') {
+      setNotification(tr("Google OAuth не настроен. Добавь GOOGLE_CLIENT_ID в .env"));
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (params.get('auth_error')) {
+      setNotification(tr("Не удалось выполнить вход через Google"));
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [checkSession]);
   useEffect(() => { if (!notification) return; const id = setTimeout(() => setNotification(''), 5000); return () => clearTimeout(id); }, [notification]);
   const sorted = [...entries].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   const latest = sorted.at(-1);
@@ -55,10 +74,10 @@ export default function Home() {
       <div className="workspace-label">{tr("ТВОЁ ПРОСТРАНСТВО БАЛАНСА")}</div>
       <nav aria-label={tr("Основное меню")}>{tabs.map(({ id, name, icon: Icon }) => <button key={id} className={`nav-item ${tab === id ? 'active' : ''}`} onClick={() => setTab(id)} aria-label={tr(name)} title={tr(name)} aria-current={tab === id ? 'page' : undefined}><Icon size={19} /><span>{tr(name)}</span>{tab === id && <span className="nav-dot" />}</button>)}</nav>
       <div className="sidebar-note"><div className="small-leaf"><Feather size={25} /></div><h3>{tr("В своём темпе —")}<br />{tr("тоже вперёд.")}</h3><p>{tr("Маленькие шаги каждый день меняют многое.")}</p><div className="note-line" /></div>
-      <div className="sidebar-bottom"><button className="help-button" onClick={() => setHelp(true)}><CircleHelp size={18} />{tr("Как это работает")}</button><div className="local-profile"><div className="avatar">{tr("А")}</div><div><strong>{tr("Моё пространство")}</strong><span>{tr("Локальный дневник")}</span></div><ShieldCheck size={17} /></div></div>
+      <div className="sidebar-bottom"><button className="help-button" onClick={() => setHelp(true)}><CircleHelp size={18} />{tr("Как это работает")}</button><div className="local-profile" onClick={()=>setAuthModal(true)} role="button" tabIndex={0} title={tr("Аккаунт")}>{user?.picture ? <img src={user.picture} alt={user.name} className="avatar avatar-img" /> : <div className="avatar">{user ? user.name.charAt(0).toUpperCase() : tr("А")}</div>}<div><strong>{user ? user.name : tr("Моё пространство")}</strong><span>{user ? user.email : tr("Локальный дневник")}</span></div>{user ? <GoogleIcon size={16} /> : <ShieldCheck size={17} />}</div></div>
     </aside>
     <div className="main-shell">
-      <header className="topbar"><div className="breadcrumb">{tr("Моё пространство ")}<ChevronRight size={14} /><strong>{tr(tabs.find(t => t.id === tab)?.name ?? '')}</strong></div><div className="topbar-right"><button className="settings-trigger secondary" onClick={()=>setSettings(true)} aria-label={tr("Настройки")}><Settings size={18}/><span>{tr("Настройки")}</span></button><span className="demo-badge"><span />{tr("Локальный ML")}</span><button className="round-button" onClick={() => setHelp(true)} aria-label={tr("Информация о проекте")}><CircleHelp size={19} /></button><div className="avatar small">{tr("А")}</div></div></header>
+      <header className="topbar"><div className="breadcrumb">{tr("Моё пространство ")}<ChevronRight size={14} /><strong>{tr(tabs.find(t => t.id === tab)?.name ?? '')}</strong></div><div className="topbar-right">{user ? <button className="avatar-btn" onClick={()=>setAuthModal(true)} aria-label={tr("Аккаунт")} title={tr("Аккаунт")}>{user.picture ? <img src={user.picture} alt={user.name} className="avatar small avatar-img" /> : <div className="avatar small">{user.name.charAt(0).toUpperCase()}</div>}</button> : <button className="auth-pill-btn secondary" onClick={()=>setAuthModal(true)}><GoogleIcon size={14}/><span>{tr("Войти")}</span></button>}<button className="settings-trigger secondary" onClick={()=>setSettings(true)} aria-label={tr("Настройки")}><Settings size={18}/><span>{tr("Настройки")}</span></button><span className="demo-badge"><span />{tr("Локальный ML")}</span><button className="round-button" onClick={() => setHelp(true)} aria-label={tr("Информация о проекте")}><CircleHelp size={19} /></button></div></header>
       <main>
         <div className="page-heading"><div><div className="eyebrow"><Sun size={15} /> {tr(" МЕСТО, ГДЕ МОЖНО ВЫДОХНУТЬ")}</div><h1>{tab === 'weekly' ? tr("Моя неделя") : tab === 'overview' ? tr("Как ты сегодня?") : tab === 'journal' ? tr("Твой дневник состояния") : tab === 'insights' ? tr("Замечай свои изменения") : tr("Твой профиль баланса")}{tab !== 'overview' && <span className="heading-dot">.</span>}</h1><p>{tab === 'weekly' ? tr("Итоги без оценок и ожиданий.") : tab === 'overview' ? tr("Учёба — часть жизни. Давай найдём место и для тебя.") : tab === 'journal' ? tr("Мысли становятся понятнее, когда их записываешь.") : tab === 'insights' ? tr("Небольшие наблюдения помогают увидеть общую картину.") : tr("У каждого свой ритм. Узнай чуть больше о своём.")}</p></div><span className="today">{ready ? new Date().toLocaleDateString(activeLocale(), { day: 'numeric', month: 'long', weekday: 'short' }) : ''}</span></div>
         {ready && sampleMode && <div className="sample-notice"><Sparkles size={15} /><span>{tr("Сейчас показана ")}<strong>{tr("учебная история из 7 примеров")}</strong>{tr(". Первая запись начнёт твою личную историю.")}</span><button onClick={() => { reset(); setNotification(tr("Теперь можно начать свою историю")); }}>{tr("Начать с чистого листа ")}<ArrowRight size={14} /></button></div>}
@@ -81,6 +100,7 @@ export default function Home() {
     {modal && <EntryModal onClose={() => setModal(false)} onSave={(entry) => { add(entry); setModal(false); setDetail(entry); setNotification(tr("Запись добавлена в твой дневник")); }} />}
     {detail && <Modal onClose={() => setDetail(null)} title={tr("Разбор твоей записи")}><div className="result-meta"><span>{dateLabel(detail.createdAt)} · {detail.sample ? tr("Учебный пример") : tr("Личная запись")}</span><span className="tag">{detailView!.source === 'local' ? tr("Локальная ML-модель") : detailView!.source === 'demo' ? tr("Демонстрационный разбор") : tr("ИИ-разбор")}</span></div><div className="result-score"><div><span className="eyebrow">{tr("УСЛОВНЫЙ ИНДЕКС СОСТОЯНИЯ")}</span><h2>{detailView!.title}</h2><span>{level(detailView!.score)}</span></div><div className="score-number">{detailView!.score}<small>/10</small></div></div><div className="emotion-tags">{detailView!.emotions.map(e => <span className="tag" key={e}>{e}</span>)}</div><p className="result-summary">{detailView!.summary}</p>{!!detail.clarifications?.length&&<p className="info-box">{tr("Уточнения подтверждены пользователем.")}</p>}<blockquote>{detail.sample?tr(detail.text):detail.text}</blockquote><div className="entry-metrics"><span><Moon size={15} />{detail.sleep} {tr(" ч сна")}</span><span><Activity size={15} />{detail.activity} {tr(" мин активности")}</span><span><BookOpen size={15} />{detail.workload} {tr(" ч учёбы")}</span></div><h3 className="result-section-title">{tr("Возможные причины")}</h3><ul className="triggers-list">{detailView!.triggers.map(t => <li key={t}>{t}</li>)}</ul><h3 className="result-section-title">{tr("Что можно попробовать")}</h3>{detailView!.recommendations.map((r, i) => <div className="recommendation" key={i}><span>{i + 1}</span><div><h3>{r.title}</h3><p>{r.detail}</p></div></div>)}<div className="modal-footer"><button className="danger-button" onClick={() => { if (confirm(tr("Удалить эту запись?"))) { remove(detail.id); setDetail(null); setNotification(tr("Запись удалена")); } }}><Trash2 size={15} />{tr("Удалить")}</button><button className="primary" onClick={() => setDetail(null)}>{tr("Понятно, спасибо ")}<Check size={16} /></button></div></Modal>}
     {settings && <Modal title={tr("Настройки")} onClose={()=>setSettings(false)}><PreferencesPanel/></Modal>}
+    {authModal && <Modal title={user ? tr("Твой Google аккаунт") : tr("Вход в Aisana")} onClose={()=>setAuthModal(false)}><AuthModalContent onClose={()=>setAuthModal(false)} onNotification={setNotification}/></Modal>}
     {help && <Modal title={tr("Немного об Aisana")} onClose={() => setHelp(false)}><div className="about-mark"><Leaf size={35} /></div><h2>{tr("Учёба в твоём ритме.")}</h2><p className="result-summary">{tr("Aisana — учебный MVP помощника по учебному стрессу. Здесь можно описать день, получить разбор и увидеть свою динамику.")}</p><div className="recommendation"><span>1</span><div><h3>{tr("Запиши, что происходит")}</h3><p>{tr("Добавь своё настроение, сон, движение и время на учёбу.")}</p></div></div><div className="recommendation"><span>2</span><div><h3>{tr("Посмотри на ситуацию со стороны")}</h3><p>{tr("Обученный классификатор определяет вероятную тему текста. Условный индекс рассчитывается по настроению, сну, времени учёбы и словам о сроках. Он не измеряет продуктивность; физическая активность в формулу не входит. Модель не является психологическим тестом и не генерирует свободный ответ как чат-бот.")}</p></div></div><div className="recommendation"><span>3</span><div><h3>{tr("Наблюдай за изменениями")}</h3><p>{tr("История, график и профиль обновляются после каждой записи. Данные сохраняются в этом браузере, без аккаунта.")}</p></div></div><p className="info-box">{tr("Новые записи анализируются в браузере на трёх языках. Модель обучена на 80 искусственных примерах и может ошибаться. Для открытия сайта нужен локальный сервер; интернет для анализа не требуется.")}</p><button className="primary full-width" onClick={() => setHelp(false)}>{tr("Всё понятно ")}<ArrowRight size={16} /></button></Modal>}
   </div>;
 }
