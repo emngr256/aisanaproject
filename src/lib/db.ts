@@ -9,9 +9,14 @@ export function getDbPool(): Pool | null {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) return null;
 
+  // Render internal hostnames (e.g. dpg-xxxxx-a without a dot) only exist inside Render's private cloud network.
+  // Outside Render (on a local PC), resolving dpg-xxx fails with getaddrinfo ENOTFOUND.
+  const isInternal = databaseUrl.includes('dpg-') && !databaseUrl.includes('.');
+  if (isInternal && !process.env.RENDER) {
+    return null;
+  }
+
   if (!pool) {
-    const isInternal =
-      databaseUrl.includes('dpg-') && !databaseUrl.includes('oregon-postgres.render.com');
     pool = new Pool({
       connectionString: databaseUrl,
       // Render internal VPC does not use SSL; external connections require SSL.
