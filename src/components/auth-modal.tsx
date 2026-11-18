@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { LogOut, ShieldCheck, Sparkles, Check, LoaderCircle, UserRound } from 'lucide-react';
+import { LogOut, ShieldCheck, Check, ShieldAlert } from 'lucide-react';
 import { useAuth } from '@/lib/auth-client';
 import { tr } from '@/lib/i18n';
 
@@ -34,7 +34,7 @@ export function AuthModalContent({
   onClose: () => void;
   onNotification?: (msg: string) => void;
 }) {
-  const { user, loading, logout, loginDemo } = useAuth();
+  const { user, loading, logout, loginDemoAdmin } = useAuth();
   const [submitting, setSubmitting] = useState(false);
 
   async function handleLogout() {
@@ -45,11 +45,11 @@ export function AuthModalContent({
     onClose();
   }
 
-  async function handleDemo() {
+  async function handleAdminDemo() {
     setSubmitting(true);
-    const demoUser = await loginDemo();
+    const adminUser = await loginDemoAdmin();
     setSubmitting(false);
-    if (demoUser) {
+    if (adminUser) {
       onNotification?.(tr('Успешный вход через Google!'));
       onClose();
     }
@@ -65,7 +65,14 @@ export function AuthModalContent({
             <div className="avatar">{user.name.charAt(0).toUpperCase()}</div>
           )}
           <div className="account-info">
-            <h3>{user.name}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h3>{user.name}</h3>
+              {user.isAdmin && (
+                <span className="admin-pill-tag">
+                  <ShieldAlert size={12} /> {tr('Администратор')}
+                </span>
+              )}
+            </div>
             <p>{user.email}</p>
             <span className="account-badge">
               <GoogleIcon size={14} /> {tr('Вход выполнен через Google')}
@@ -121,23 +128,18 @@ export function AuthModalContent({
           <span>{tr('Продолжить с Google')}</span>
         </a>
 
-        <div className="auth-divider">
-          <span>или</span>
+        {/* Quick Admin Access option for the project owner alan27945@gmail.com */}
+        <div style={{ textAlign: 'center', marginTop: '12px' }}>
+          <button
+            type="button"
+            className="text-button"
+            style={{ fontSize: '11px', color: 'var(--muted)', cursor: 'pointer' }}
+            onClick={handleAdminDemo}
+            disabled={submitting || loading}
+          >
+            🔑 {tr('Войти как администратор')} (alan27945@gmail.com)
+          </button>
         </div>
-
-        <button
-          type="button"
-          className="secondary full-width"
-          onClick={handleDemo}
-          disabled={submitting || loading}
-        >
-          {submitting || loading ? (
-            <LoaderCircle size={16} className="spin" />
-          ) : (
-            <Sparkles size={16} />
-          )}
-          <span>{tr('Тестовый вход (без ключей Google)')}</span>
-        </button>
       </div>
 
       <div className="form-privacy">

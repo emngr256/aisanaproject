@@ -4,17 +4,20 @@ import {
   SESSION_COOKIE_NAME,
   SESSION_MAX_AGE,
   signToken,
+  isUserAdmin,
   AuthUser,
 } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
     const body = (await request.json().catch(() => ({}))) as Partial<AuthUser>;
+    const email = body.email || 'student.google@aisana.me';
     const user: AuthUser = {
-      id: body.id || 'demo-google-user',
-      name: body.name || 'Google Студент',
-      email: body.email || 'student.google@aisana.me',
+      id: body.id || (isUserAdmin(email) ? 'admin-alan' : 'demo-google-user'),
+      name: body.name || (isUserAdmin(email) ? 'Alan (Admin)' : 'Google Студент'),
+      email,
       picture: body.picture,
+      isAdmin: isUserAdmin(email),
     };
     const { upsertUser } = await import('@/lib/db');
     await upsertUser(user);

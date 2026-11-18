@@ -176,3 +176,75 @@ export async function checkDbHealth(): Promise<{ ok: boolean; message: string }>
     return { ok: false, message: err instanceof Error ? err.message : String(err) };
   }
 }
+
+export interface AdminStats {
+  totalUsers: number;
+  totalEntries: number;
+  recentUsers: Array<{
+    id: string;
+    email: string;
+    name: string;
+    picture?: string;
+    createdAt: string;
+    entriesCount: number;
+  }>;
+  dbStatus: 'connected' | 'offline' | 'not_configured';
+  dbHost?: string;
+  latencyMs?: number;
+}
+
+export async function getAdminStats(): Promise<AdminStats> {
+  const db = getDbPool();
+  if (!db) {
+    return {
+      totalUsers: 0,
+      totalEntries: 0,
+      recentUsers: [],
+      dbStatus: 'not_configured',
+    };
+  }
+
+  const start = Date.now();
+  try {
+    await initDb();
+    const usersCountRes = await db.query('SELECT COUNT(*)::int as count FROM users');
+    const entriesCountRes = await db.query('SELECT COUNT(*)::int as count FROM entries');
+    const recentUsersRes = await db.query(`
+      SELECT u.id, u.email, u.name, u.picture, u.created_at as "createdAt",
+             COUNT(e.id)::int as "entriesCount"
+      FROM users u
+      LEFT JOIN entries e ON e.user_id = u.id
+      GROUP BY u.id
+      ORDER BY u.created_at DESC
+      LIMIT 20
+    `);
+
+    const latencyMs = Date.now() - start;
+    const databaseUrl = process.env.DATABASE_URL || '';
+    const hostMatch = databaseUrl.match(/@([^/:]+)/);
+
+    return {
+      totalUsers: usersCountRes.rows[0]?.count || 0,
+      totalEntries: entriesCountRes.rows[0]?.count || 0,
+      recentUsers: recentUsersRes.rows.map((r) => ({
+        id: r.id,
+        email: r.email,
+        name: r.name,
+        picture: r.picture,
+        createdAt: new Date(r.createdAt).toISOString(),
+        entriesCount: Number(r.entriesCount || 0),
+      })),
+      dbStatus: 'connected',
+      dbHost: hostMatch ? hostMatch[1] : 'postgresql',
+      latencyMs,
+    };
+  } catch (err) {
+    console.error('getAdminStats error:', err);
+    return {
+      totalUsers: 0,
+      totalEntries: 0,
+      recentUsers: [],
+      dbStatus: 'offline',
+    };
+  }
+}

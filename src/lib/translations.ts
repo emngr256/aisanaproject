@@ -230,7 +230,27 @@ Google OAuth не настроен. Добавь GOOGLE_CLIENT_ID в .env|Google
 Войди с Google аккаунтом, чтобы сохранить своё пространство.|Өз кеңістігіңді сақтау үшін Google тіркелгісімен кір.|Sign in with your Google account to save your space.
 Записи дневника привязаны к твоей сессии.|Күнделік жазбалары сессияңа байланыстырылған.|Journal entries are linked to your session.
 Аккаунт|Тіркелгі|Account
-Выход выполнен|Жүйеден шықтыңыз|Signed out successfully`;
+Выход выполнен|Жүйеден шықтыңыз|Signed out successfully
+Админ-панель|Әкімші тақтасы|Admin panel
+Панель администратора|Әкімші тақтасы|Admin panel
+Администратор|Әкімші|Administrator
+Управление и диагностика системы|Жүйені басқару және диагностика|System management and diagnostics
+Пользователи в БД|ДҚ-дағы пайдаланушылар|Users in DB
+Записей в БД|ДҚ-дағы жазбалар|Entries in DB
+Статус PostgreSQL|PostgreSQL күйі|PostgreSQL status
+Подключено|Қосылған|Connected
+Офлайн / Локально|Офлайн / Жергілікті|Offline / Local
+Тестовые функции администратора|Әкімшінің сынақ функциялары|Admin developer tools
+Загрузить 7 тестовых записей|7 сынақ жазбасын жүктеу|Load 7 sample entries
+Очистить тестовые записи|Сынақ жазбаларын тазалау|Clear sample entries
+Создать тестовую запись стресса (9/10)|Стресс сынақ жазбасын жасау (9/10)|Create test stress entry (9/10)
+Создать спокойную тестовую запись (2/10)|Тыныш сынақ жазбасын жасау (2/10)|Create test calm entry (2/10)
+Проверить соединение с БД|ДҚ байланысын тексеру|Check DB connection
+Недавние пользователи|Соңғы пайдаланушылар|Recent users
+Записей:|Жазбалар:|Entries:
+Войти как администратор|Әкімші ретінде кіру|Sign in as administrator
+Тестовая запись добавлена|Сынақ жазбасы қосылды|Test entry added
+Тестовые записи очищены|Сынақ жазбалары тазаланды|Sample entries cleared`;
 export const translations: Record<string, [string,string]> = Object.fromEntries(rows.split('\n').map(row=>{const [ru,kk,en]=row.split('|');return [ru,[kk,en]];}));
 translations['Обученный классификатор определяет вероятную тему текста. Условный индекс рассчитывается по настроению, сну, времени учёбы и словам о сроках. Он не измеряет продуктивность; физическая активность в формулу не входит. Модель не является психологическим тестом и не генерирует свободный ответ как чат-бот.']=['Үйретілген жіктеуіш мәтіннің ықтимал тақырыбын анықтайды. Шартты индекс көңіл күйге, ұйқыға, оқу уақытына және мерзім туралы сөздерге негізделеді. Ол өнімділікті өлшемейді; қозғалыс формулаға кірмейді. Бұл психологиялық тест немесе еркін жауап беретін чат-бот емес.','The trained classifier suggests a topic. The estimated index uses mood, sleep, study time and deadline mentions. It does not measure productivity; physical activity is not part of the formula. This is not a psychological test or a free-form chatbot.'];
 translations['Новые записи анализируются в браузере на трёх языках. Модель обучена на 80 искусственных примерах и может ошибаться. Для открытия сайта нужен локальный сервер; интернет для анализа не требуется.']=['Жаңа жазбалар браузерде үш тілде талданады. Модель 80 жасанды мысалда үйретілген және қателесуі мүмкін. Сайтты ашу үшін жергілікті сервер керек; талдауға интернет қажет емес.','New entries are analysed in your browser in three languages. The model was trained on 80 synthetic examples and can make mistakes. A local server is needed to open the site; analysis requires no internet.'];

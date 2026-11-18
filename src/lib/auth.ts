@@ -5,6 +5,17 @@ export interface AuthUser {
   name: string;
   email: string;
   picture?: string;
+  isAdmin?: boolean;
+}
+
+export const ADMIN_EMAILS = [
+  'alan27945@gmail.com',
+  ...(process.env.ADMIN_EMAIL ? [process.env.ADMIN_EMAIL.toLowerCase().trim()] : []),
+];
+
+export function isUserAdmin(email?: string | null): boolean {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email.toLowerCase().trim());
 }
 
 export const SESSION_COOKIE_NAME = 'aisana_session';
@@ -37,7 +48,12 @@ export function verifyToken<T>(token: string): T | null {
     if (!crypto.timingSafeEqual(sigBuf, expBuf)) return null;
 
     const json = Buffer.from(data, 'base64url').toString('utf8');
-    return JSON.parse(json) as T;
+    const parsed = JSON.parse(json) as T;
+    if (parsed && typeof parsed === 'object' && 'email' in parsed) {
+      const email = (parsed as unknown as { email?: string }).email;
+      (parsed as unknown as { isAdmin: boolean }).isAdmin = isUserAdmin(email);
+    }
+    return parsed;
   } catch {
     return null;
   }
@@ -105,10 +121,12 @@ export async function exchangeGoogleCode(code: string, baseUrl: string): Promise
   }
 
   const profile = await userRes.json();
+  const email = profile.email || '';
   return {
     id: profile.sub,
     name: profile.name || profile.given_name || 'Google User',
-    email: profile.email || '',
+    email,
     picture: profile.picture,
+    isAdmin: isUserAdmin(email),
   };
 }

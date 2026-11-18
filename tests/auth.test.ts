@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { signToken, verifyToken, getGoogleOAuthUrl, AuthUser } from '../src/lib/auth';
+import { signToken, verifyToken, getGoogleOAuthUrl, isUserAdmin, AuthUser } from '../src/lib/auth';
 
 test('signs and verifies user session token correctly', () => {
   const user: AuthUser = {
@@ -8,6 +8,7 @@ test('signs and verifies user session token correctly', () => {
     name: 'Тестовый Пользователь',
     email: 'user@example.com',
     picture: 'https://lh3.googleusercontent.com/test-pic',
+    isAdmin: false,
   };
 
   const token = signToken(user);
@@ -17,12 +18,28 @@ test('signs and verifies user session token correctly', () => {
   assert.deepEqual(verified, user);
 });
 
+test('recognizes alan27945@gmail.com as administrator', () => {
+  assert.equal(isUserAdmin('alan27945@gmail.com'), true);
+  assert.equal(isUserAdmin('ALAN27945@GMAIL.COM'), true);
+  assert.equal(isUserAdmin('user@example.com'), false);
+  assert.equal(isUserAdmin(null), false);
+
+  const adminUser: AuthUser = {
+    id: 'admin-1',
+    name: 'Alan Admin',
+    email: 'alan27945@gmail.com',
+  };
+  const token = signToken(adminUser);
+  const verified = verifyToken<AuthUser>(token);
+  assert.equal(verified?.isAdmin, true);
+});
+
 test('rejects tampered or malformed tokens', () => {
   assert.equal(verifyToken(''), null);
   assert.equal(verifyToken('not-a-token'), null);
   assert.equal(verifyToken('a.b.c'), null);
 
-  const user: AuthUser = { id: '1', name: 'User', email: 'test@mail.com' };
+  const user: AuthUser = { id: '1', name: 'User', email: 'test@mail.com', isAdmin: false };
   const validToken = signToken(user);
   const [data] = validToken.split('.');
 
