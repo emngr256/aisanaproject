@@ -9,7 +9,7 @@ if not exist .next\BUILD_ID (
   if errorlevel 1 exit /b 1
 )
 echo.
-echo Aisana - local network mode, port 3001
+echo StudyFlow - local network mode, port 3001
 echo On this computer: http://localhost:3001
 echo On another computer: http://YOUR-WIFI-IP:3001
 echo Your current network addresses:

@@ -47,12 +47,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
       key: std::env::var("OPENAI_API_KEY").unwrap_or_default(),
       model: std::env::var("OPENAI_MODEL").unwrap_or_else(|_| "gpt-4o-mini".to_string())
     });
-    let app = Router::new().route("/health", get(|| async { Json(json!({"status":"ok", "service":"aisana-api"})) }))
+    let app = Router::new().route("/health", get(|| async { Json(json!({"status":"ok", "service":"studyflow-api"})) }))
       .route("/analyze", post(analyze)).layer(DefaultBodyLimit::max(20000)).with_state(state);
     let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
     let bind_addr = format!("0.0.0.0:{}", port);
     let listener = tokio::net::TcpListener::bind(&bind_addr).await?;
-    println!("Aisana Rust API listening on {}", bind_addr);
+    println!("StudyFlow Rust API listening on {}", bind_addr);
     axum::serve(listener, app).await?;
     Ok(())
 }

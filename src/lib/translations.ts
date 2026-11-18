@@ -14,6 +14,7 @@ const rows = `Мой обзор|Шолу|Overview
 Низкий условный индекс|Төмен шартты индекс|Low estimated index
 Дневник скачан в формате JSON|Күнделік JSON форматында жүктелді|Journal downloaded as JSON
 Aisana — главная|Aisana — басты бет|Aisana — home
+StudyFlow — главная|StudyFlow — басты бет|StudyFlow — home
 ТВОЁ ПРОСТРАНСТВО БАЛАНСА|ТЕПЕ-ТЕҢДІК КЕҢІСТІГІҢ|YOUR SPACE FOR BALANCE
 Основное меню|Негізгі мәзір|Main navigation
 В своём темпе —|Өз қарқыныңмен —|At your own pace —
@@ -120,6 +121,7 @@ Aisana — главная|Aisana — басты бет|Aisana — home
 Учебные примеры загружены|Оқу мысалдары жүктелді|Practice examples loaded
 Загрузить учебные примеры|Оқу мысалдарын жүктеу|Load practice examples
 aisana · учёба в твоём ритме|aisana · өз ырғағыңмен оқы|aisana · study at your own pace
+studyflow · учёба в твоём ритме|studyflow · өз ырғағыңмен оқы|studyflow · study at your own pace
 Инструмент самонаблюдения, не медицинская диагностика|Өзін бақылау құралы, медициналық диагностика емес|A self-reflection tool, not medical diagnosis
 Запись добавлена в твой дневник|Жазба күнделігіңе қосылды|Entry added to your journal
 Разбор твоей записи|Жазбаңды талдау|Your entry analysis
@@ -139,8 +141,11 @@ aisana · учёба в твоём ритме|aisana · өз ырғағыңме�
 Удалить|Жою|Delete
 Понятно, спасибо|Түсінікті, рақмет|Got it, thanks
 Немного об Aisana|Aisana туралы|About Aisana
+Немного о StudyFlow|StudyFlow туралы|About StudyFlow
+Немного об StudyFlow|StudyFlow туралы|About StudyFlow
 Учёба в твоём ритме.|Өз ырғағыңмен оқы.|Study at your own pace.
 Aisana — учебный MVP помощника по учебному стрессу. Здесь можно описать день, получить разбор и увидеть свою динамику.|Aisana — оқу стрессіне арналған көмекшінің оқу MVP нұсқасы. Күніңді сипаттап, талдау алып, өзгерістеріңді бақылай аласың.|Aisana is an educational MVP for reflecting on study stress. Describe your day, get an analysis and track changes.
+StudyFlow — учебный MVP помощника по учебному стрессу. Здесь можно описать день, получить разбор и увидеть свою динамику.|StudyFlow — оқу стрессіне арналған көмекшінің оқу MVP нұсқасы. Күніңді сипаттап, талдау алып, өзгерістеріңді бақылай аласың.|StudyFlow is an educational MVP for reflecting on study stress. Describe your day, get an analysis and track changes.
 Запиши, что происходит|Не болып жатқанын жаз|Write what's happening
 Добавь своё настроение, сон, движение и время на учёбу.|Көңіл күйіңді, ұйқыңды, қозғалысыңды және оқу уақытын қос.|Add your mood, sleep, movement and study time.
 Посмотри на ситуацию со стороны|Жағдайға сырт көзбен қара|Look at the situation from another angle
@@ -219,6 +224,7 @@ ML-модель анализирует текст прямо в браузере
 Выйти|Шығу|Sign out
 Твой Google аккаунт|Сенің Google тіркелгің|Your Google account
 Вход в Aisana|Aisana-ға кіру|Sign in to Aisana
+Вход в StudyFlow|StudyFlow-ға кіру|Sign in to StudyFlow
 Продолжить с Google|Google арқылы жалғастыру|Continue with Google
 Вход выполнен через Google|Google арқылы кірдіңіз|Signed in with Google
 Гостевой режим|Қонақ режимі|Guest mode

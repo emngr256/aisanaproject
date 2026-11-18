@@ -106,7 +106,7 @@ export function AuthModalContent({
         <div className="auth-icon-circle">
           <GoogleIcon size={32} />
         </div>
-        <h2>{tr('Вход в Aisana')}</h2>
+        <h2>{tr('Вход в StudyFlow')}</h2>
         <p className="form-intro">
           {tr('Войди с Google аккаунтом, чтобы сохранить своё пространство.')}
         </p>

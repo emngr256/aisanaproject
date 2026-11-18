@@ -6,7 +6,7 @@ services:
     plan: free
     rootDir: backend
     buildCommand: cargo build --release
-    startCommand: ./target/release/aisana-api
+    startCommand: ./target/release/studyflow-api
     healthCheckPath: /health
     envVars:
       - key: OPENAI_API_KEY
