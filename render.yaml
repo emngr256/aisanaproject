@@ -13,6 +13,8 @@ services:
         sync: false
       - key: OPENAI_MODEL
         value: gpt-4o-mini
+      - key: DATABASE_URL
+        value: postgresql://aisana_user:yogqWaJSe7kOT5rsU1ufVKKUbUA0qJah@dpg-dbult71ckfvc73cjkhg0-a/aisana
 
   # 2. Next.js Frontend
   - type: web
@@ -24,6 +26,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20
+      - key: DATABASE_URL
+        value: postgresql://aisana_user:yogqWaJSe7kOT5rsU1ufVKKUbUA0qJah@dpg-dbult71ckfvc73cjkhg0-a/aisana
       - key: RUST_API_URL
         fromService:
           type: web

@@ -22,6 +22,8 @@ export async function GET(request: Request) {
 
   try {
     const user = await exchangeGoogleCode(code, baseUrl);
+    const { upsertUser } = await import('@/lib/db');
+    await upsertUser(user);
     const token = signToken(user);
     const cookieStore = await cookies();
     cookieStore.set(SESSION_COOKIE_NAME, token, {

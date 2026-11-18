@@ -3,7 +3,14 @@ export const inputSchema = z.object({ text: z.string().trim().min(15, 'Опиш�
 export type EntryInput = z.infer<typeof inputSchema>;
 export const analysisSchema = z.object({ score: z.number().int().min(1).max(10), title: z.string().min(1).max(100), summary: z.string().min(1).max(1200), emotions: z.array(z.string().max(60)).min(1).max(5), triggers: z.array(z.string().max(200)).min(1).max(5), recommendations: z.array(z.object({ title: z.string().max(100), detail: z.string().max(700) })).min(1).max(4), source: z.enum(['demo', 'ai', 'local']) });
 export type Analysis = z.infer<typeof analysisSchema>;
-export type Entry = EntryInput & { id: string; createdAt: string; analysis: Analysis; sample?: boolean; clarifications?: string[] };
+export const entrySchema = inputSchema.extend({
+  id: z.string(),
+  createdAt: z.string(),
+  analysis: analysisSchema,
+  sample: z.boolean().optional(),
+  clarifications: z.array(z.string()).optional(),
+});
+export type Entry = z.infer<typeof entrySchema>;
 export function demoAnalyze(input: EntryInput): Analysis {
   const text = input.text.toLowerCase();
   const deadline = /дедлайн|экзамен|сесси|контрольн|зач[её]т|срок|deadline|exam|test|assessment|емтихан|мерзім|бақылау/.test(text);

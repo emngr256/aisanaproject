@@ -41,6 +41,7 @@ export default function Home() {
   const [notification, setNotification] = useState('');
   const [period, setPeriod] = useState(7);
   useEffect(() => { useJournal.persist.rehydrate(); init(); setReady(true); checkSession(); }, [init, checkSession]);
+  useEffect(() => { if (user) { useJournal.getState().syncWithDatabase(); } }, [user]);
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);

@@ -16,6 +16,8 @@ export async function POST(request: Request) {
       email: body.email || 'student.google@aisana.me',
       picture: body.picture,
     };
+    const { upsertUser } = await import('@/lib/db');
+    await upsertUser(user);
     const token = signToken(user);
     const cookieStore = await cookies();
     cookieStore.set(SESSION_COOKIE_NAME, token, {
