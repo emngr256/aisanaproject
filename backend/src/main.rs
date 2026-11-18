@@ -49,8 +49,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
     let app = Router::new().route("/health", get(|| async { Json(json!({"status":"ok", "service":"aisana-api"})) }))
       .route("/analyze", post(analyze)).layer(DefaultBodyLimit::max(20000)).with_state(state);
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080").await?;
-    println!("Aisana Rust API: http://127.0.0.1:8080");
+    let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    let bind_addr = format!("0.0.0.0:{}", port);
+    let listener = tokio::net::TcpListener::bind(&bind_addr).await?;
+    println!("Aisana Rust API listening on {}", bind_addr);
     axum::serve(listener, app).await?;
     Ok(())
 }
