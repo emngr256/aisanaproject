@@ -8,8 +8,6 @@ interface AuthState {
   initialized: boolean;
   checkSession: () => Promise<AuthUser | null>;
   logout: () => Promise<void>;
-  loginDemo: () => Promise<AuthUser | null>;
-  loginDemoAdmin: () => Promise<AuthUser | null>;
 }
 
 export const useAuth = create<AuthState>((set) => ({
@@ -40,49 +38,5 @@ export const useAuth = create<AuthState>((set) => ({
       // ignore
     }
     set({ user: null, loading: false });
-  },
-  loginDemo: async () => {
-    set({ loading: true });
-    try {
-      const res = await fetch('/api/auth/demo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'Google Студент',
-          email: 'student.google@aisana.me',
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        set({ user: data.user, loading: false, initialized: true });
-        return data.user;
-      }
-    } catch {
-      // ignore
-    }
-    set({ loading: false });
-    return null;
-  },
-  loginDemoAdmin: async () => {
-    set({ loading: true });
-    try {
-      const res = await fetch('/api/auth/demo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'Alan (Admin)',
-          email: 'alan27945@gmail.com',
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        set({ user: data.user, loading: false, initialized: true });
-        return data.user;
-      }
-    } catch {
-      // ignore
-    }
-    set({ loading: false });
-    return null;
   },
 }));

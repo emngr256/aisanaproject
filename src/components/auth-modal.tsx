@@ -34,7 +34,7 @@ export function AuthModalContent({
   onClose: () => void;
   onNotification?: (msg: string) => void;
 }) {
-  const { user, loading, logout, loginDemoAdmin } = useAuth();
+  const { user, loading, logout } = useAuth();
   const [submitting, setSubmitting] = useState(false);
 
   async function handleLogout() {
@@ -43,16 +43,6 @@ export function AuthModalContent({
     setSubmitting(false);
     onNotification?.(tr('Выход выполнен'));
     onClose();
-  }
-
-  async function handleAdminDemo() {
-    setSubmitting(true);
-    const adminUser = await loginDemoAdmin();
-    setSubmitting(false);
-    if (adminUser) {
-      onNotification?.(tr('Успешный вход через Google!'));
-      onClose();
-    }
   }
 
   if (user) {
@@ -127,19 +117,6 @@ export function AuthModalContent({
           <GoogleIcon size={20} />
           <span>{tr('Продолжить с Google')}</span>
         </a>
-
-        {/* Quick Admin Access option for the project owner alan27945@gmail.com */}
-        <div style={{ textAlign: 'center', marginTop: '12px' }}>
-          <button
-            type="button"
-            className="text-button"
-            style={{ fontSize: '11px', color: 'var(--muted)', cursor: 'pointer' }}
-            onClick={handleAdminDemo}
-            disabled={submitting || loading}
-          >
-            🔑 {tr('Войти как администратор')} (alan27945@gmail.com)
-          </button>
-        </div>
       </div>
 
       <div className="form-privacy">
