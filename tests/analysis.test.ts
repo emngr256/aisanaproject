@@ -1,0 +1,8 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { inputSchema, demoAnalyze, analysisSchema, makeSamples } from '../src/lib/analysis';
+const input = { text: 'Сегодня получилось выполнить задания и спокойно отдохнуть.', mood: 4, sleep: 8, activity: 30, workload: 5 };
+test('rejects empty text and impossible lifestyle values', () => { assert.equal(inputSchema.safeParse({ ...input, text: ' ' }).success, false); assert.equal(inputSchema.safeParse({ ...input, sleep: 25 }).success, false); assert.equal(inputSchema.safeParse({ ...input, mood: 0 }).success, false); });
+test('high workload and deadlines produce a higher demo score than a calm day', () => { const calm = demoAnalyze(input); const tense = demoAnalyze({ ...input, text: 'Скоро экзамен и дедлайн, очень устал и не могу начать работу.', mood: 1, sleep: 4, workload: 10 }); assert.ok(tense.score > calm.score); assert.ok(tense.triggers.some(t => t.includes('сроки'))); assert.ok(tense.recommendations.some(r => r.title.includes('пяти минут'))); });
+test('all mood and lifestyle boundary combinations produce valid, marked demo output', () => { for (const mood of [1, 2, 3, 4, 5]) for (const sleep of [0, 16]) for (const workload of [0, 16]) { const result = demoAnalyze({ ...input, mood, sleep, workload }); assert.ok(analysisSchema.safeParse(result).success); assert.equal(result.source, 'demo'); } });
+test('sample records are explicitly labeled and have distinct IDs', () => { const samples = makeSamples(); assert.equal(samples.length, 7); assert.equal(new Set(samples.map(e => e.id)).size, 7); assert.ok(samples.every(e => e.sample && analysisSchema.safeParse(e.analysis).success)); });

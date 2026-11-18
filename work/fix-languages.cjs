@@ -1,0 +1,2 @@
+const fs=require('fs');for(const path of ['src/lib/analysis.ts','src/lib/local-ml.ts']){let s=fs.readFileSync(path,'utf8');s=s.replaceAll('/дедлайн|экзамен|сесси|контрольн|зач[её]т|срок/','/дедлайн|экзамен|сесси|контрольн|зач[её]т|срок|deadline|exam|test|assessment|емтихан|мерзім|бақылау/');fs.writeFileSync(path,s);}
+let s=fs.readFileSync('src/lib/contradictions.ts','utf8').replace('спал[аи]?\\b','спал[аи]?(?=[^а-я]|$)');fs.writeFileSync('src/lib/contradictions.ts',s);
