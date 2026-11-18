@@ -19,7 +19,10 @@ export const useJournal = create<State>()(
       entries: [],
       initialized: false,
       init: () => {
-        if (!get().initialized) set({ entries: makeSamples(), initialized: true });
+        set((s) => ({
+          entries: s.entries.filter((e) => !e.sample),
+          initialized: true,
+        }));
       },
       add: (entry) => {
         set((s) => ({ entries: [...s.entries.filter((e) => !e.sample), entry] }));
