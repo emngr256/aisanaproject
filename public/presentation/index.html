@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyFlow — Презентация проекта для экспертов</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --bg: #faf9fc;
+      --card: #ffffff;
+      --border: #eee6f3;
+      --ink: #353342;
+      --heading: #554363;
+      --muted: #82758e;
+      --purple: #8c75b4;
+      --purple-dark: #725b9e;
+      --lavender: #f1edf7;
+      --green-bg: #eff4eb;
+      --green-text: #6c8964;
+      --peach-bg: #fcf0e7;
+      --peach-text: #b67d54;
+      --blue-bg: #ecf1f9;
+      --blue-text: #6a88ab;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .slide {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.35s ease-in-out;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .screen-frame {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(85, 67, 99, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .frame-bar {
+      height: 28px;
+      background: #f7f4fa;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 6px;
+    }
+
+    .frame-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        page-break-after: always;
+        min-height: 100vh;
+        margin-bottom: 40px;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#8c75b4]/20">
+
+  <!-- TOP HEADER -->
+  <header class="w-full border-b border-[#eee6f3] bg-white/80 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-[#f0eaf7] text-[#8c75b4] flex items-center justify-center font-bold text-lg shadow-sm">
+        🌸
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-xl tracking-tight text-[#554363]">studyflow<span class="text-[#8c75b4]">.</span></span>
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#f1edf7] text-[#8c75b4] font-medium border border-[#e2d9ec]">Экспертная защита</span>
+        </div>
+        <p class="text-[11px] text-[#82758e] hidden sm:block">Интеллектуальный веб-ассистент учебного ритма и академического баланса</p>
+      </div>
+    </div>
+
+    <!-- Slide Indicators & Controls -->
+    <div class="flex items-center gap-3 no-print">
+      <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#faf9fc] border border-[#eee6f3]" id="dotsContainer">
+        <!-- Dots injected by JS -->
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="prevBtn" onclick="changeSlide(-1)" class="p-2 rounded-lg border border-[#eee6f3] bg-white hover:bg-[#f1edf7] text-[#554363] text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed">
+          ← Назад
+        </button>
+        <span id="slideCounter" class="text-xs font-semibold text-[#8c75b4] px-2 min-w-[50px] text-center">1 / 6</span>
+        <button id="nextBtn" onclick="changeSlide(1)" class="p-2 px-3 rounded-lg bg-[#8c75b4] hover:bg-[#725b9e] text-white text-sm font-medium transition shadow-sm">
+          Вперёд →
+        </button>
+        <button onclick="toggleFullscreen()" title="Полноэкранный режим" class="p-2 rounded-lg border border-[#eee6f3] bg-white hover:bg-[#f1edf7] text-[#82758e] text-sm transition ml-1 hidden sm:block">
+          ⛶
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SLIDES CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8 flex flex-col justify-center">
+
+    <!-- SLIDE 1: ТИТУЛЬНЫЙ / КОНЦЕПЦИЯ -->
+    <section class="slide active flex-col gap-6" data-slide="1">
+      <div class="flex items-center justify-between border-b border-[#eee6f3] pb-3">
+        <span class="pill-tag bg-[#f1edf7] text-[#8c75b4] border border-[#e2d9ec]">
+          Слайд 01 · Концепция и проблематика
+        </span>
+        <span class="text-xs text-[#82758e] font-medium">Актуальность & Позиционирование</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left: Text Context -->
+        <div class="lg:col-span-5 flex flex-col gap-5">
+          <div class="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-[#8c75b4] uppercase">
+            <span>✨</span> Пространство осознанной учёбы
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-bold text-[#554363] tracking-tight leading-tight">
+            StudyFlow — учёба в твоём ритме
+          </h1>
+          <p class="text-sm text-[#82758e] leading-relaxed">
+            Инновационный сервис психологической гигиены и предупреждения студенческого выгорания на основе локального машинного обучения.
+          </p>
+
+          <div class="space-y-3 mt-1">
+            <div class="flex items-start gap-3 p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="w-7 h-7 rounded-lg bg-[#fcf0e7] text-[#b67d54] flex items-center justify-center shrink-0 font-bold text-xs">⚠️</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#554363]">Проблема</h4>
+                <p class="text-xs text-[#82758e] mt-0.5">До 68% студентов сталкиваются с пиковым стрессом, хаотичным сном и прокрастинацией без своевременной поддержки.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="w-7 h-7 rounded-lg bg-[#eff4eb] text-[#6c8964] flex items-center justify-center shrink-0 font-bold text-xs">🌱</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#554363]">Решение StudyFlow</h4>
+                <p class="text-xs text-[#82758e] mt-0.5">Ежедневный 60-секундный чекап, анализ скрытых стрессоров на устройстве студента и тактика микро-шагов.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="w-7 h-7 rounded-lg bg-[#f1edf7] text-[#8c75b4] flex items-center justify-center shrink-0 font-bold text-xs">🔒</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#554363]">Бескомпромиссная приватность</h4>
+                <p class="text-xs text-[#82758e] mt-0.5">Личные переживания анализируются непосредственно в браузере и не передаются во внешние публичные нейросети.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Screenshot Frame -->
+        <div class="lg:col-span-7">
+          <div class="screen-frame">
+            <div class="frame-bar">
+              <div class="frame-dot bg-[#f87171]"></div>
+              <div class="frame-dot bg-[#fbbf24]"></div>
+              <div class="frame-dot bg-[#34d399]"></div>
+              <span class="text-[10px] text-[#82758e] ml-2">studyflow · Главная страница и Hero-баннер</span>
+            </div>
+            <img src="slide1_hero.png" alt="StudyFlow Главный экран" class="w-full h-auto object-cover max-h-[500px]">
+          </div>
+          <p class="text-[11px] text-[#82758e] text-center mt-2.5">
+            Рис. 1: Эстетичный, снижающий тревожность интерфейс с приветствием и быстрым доступом к записи состояния.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: СБОР ДАННЫХ И UX ДНЕВНИКА -->
+    <section class="slide flex-col gap-6" data-slide="2">
+      <div class="flex items-center justify-between border-b border-[#eee6f3] pb-3">
+        <span class="pill-tag bg-[#f1edf7] text-[#8c75b4] border border-[#e2d9ec]">
+          Слайд 02 · Сбор данных и эргономика UX
+        </span>
+        <span class="text-xs text-[#82758e] font-medium">Качественная & Количественная оценка</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left: Details -->
+        <div class="lg:col-span-6 flex flex-col gap-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#554363] tracking-tight">
+            Мультимодальный ввод: экспресс-фиксация самочувствия
+          </h2>
+          <p class="text-xs sm:text-sm text-[#82758e] leading-relaxed">
+            Форма разработана с учётом когнитивной нагрузки истощённого студента: заполнение не требует усилий и занимает до двух минут.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#554363] mb-1">
+                <span>😊</span> 5-позиционная шкала настроения
+              </div>
+              <p class="text-[11px] text-[#82758e]">Интуитивные визуальные смайлы от «Очень тяжело» до «Отлично» для мгновенной самоидентификации.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#554363] mb-1">
+                <span>✍️</span> Свободная рефлексия
+              </div>
+              <p class="text-[11px] text-[#82758e]">Текстовое поле на 3000 символов для описания дедлайнов, эмоций и трудностей без цензуры.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#554363] mb-1">
+                <span>⏱️</span> Маркеры физиологии
+              </div>
+              <p class="text-[11px] text-[#82758e]">Точные слайдеры: часы сна (0–16 ч), физическая активность (0–180 мин) и время на учёбу (0–16 ч).</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#554363] mb-1">
+                <span>🎭</span> Адаптивный тон
+              </div>
+              <p class="text-[11px] text-[#82758e]">Выбор характера обратной связи: «Мягко» (эмпатия), «По делу» (структура) или «Как тренер» (мотивация).</p>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-[#faf7f2] border border-[#f0e4cf] text-[#806235] text-xs flex items-center gap-2.5">
+            <span>🛡️</span>
+            <span><strong>Контроль достоверности:</strong> система проверяет явные противоречия между текстом и цифрами перед сохранением.</span>
+          </div>
+        </div>
+
+        <!-- Right: Screenshot -->
+        <div class="lg:col-span-6 flex justify-center">
+          <div class="screen-frame max-w-md w-full">
+            <div class="frame-bar">
+              <div class="frame-dot bg-[#f87171]"></div>
+              <div class="frame-dot bg-[#fbbf24]"></div>
+              <div class="frame-dot bg-[#34d399]"></div>
+              <span class="text-[10px] text-[#82758e] ml-2">Форма ввода состояния студента</span>
+            </div>
+            <img src="slide2_diary.png" alt="Форма записи состояния" class="w-full h-auto object-contain max-h-[520px]">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: ЛОКАЛЬНЫЙ ML И АНАЛИЗ ТЕКСТА -->
+    <section class="slide flex-col gap-6" data-slide="3">
+      <div class="flex items-center justify-between border-b border-[#eee6f3] pb-3">
+        <span class="pill-tag bg-[#f1edf7] text-[#8c75b4] border border-[#e2d9ec]">
+          Слайд 03 · Алгоритмическое ядро (Edge AI)
+        </span>
+        <span class="text-xs text-[#82758e] font-medium">Мгновенный анализ без облачных задержек</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left: Technical Breakdown -->
+        <div class="lg:col-span-6 flex flex-col gap-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#554363] tracking-tight">
+            Локальная ML-модель: классификация и расчёт индекса
+          </h2>
+          <p class="text-xs sm:text-sm text-[#82758e] leading-relaxed">
+            Модель работает непосредственно в JS-рантайме браузера студента. Обученные веса включены в сборку приложения: серверные затраты равны нулю.
+          </p>
+
+          <div class="space-y-3">
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-bold text-[#554363]">Архитектура классификатора</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#f1edf7] text-[#8c75b4] font-semibold">Multinomial Naive Bayes</span>
+              </div>
+              <p class="text-[11px] text-[#82758e]">
+                Многоязычная n-gram токенизация (RU / KK / EN) с выделением префиксов и пар лексем для устойчивости к опечаткам и разговорной речи.
+              </p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <span class="text-xs font-bold text-[#554363] block mb-2">5 ключевых классов психоэмоционального состояния:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="text-[10px] px-2.5 py-1 rounded-lg bg-[#fcf0e7] text-[#b67d54] font-medium">Волнение перед сдачей</span>
+                <span class="text-[10px] px-2.5 py-1 rounded-lg bg-[#fdf2f8] text-[#be185d] font-medium">Откладывание задач</span>
+                <span class="text-[10px] px-2.5 py-1 rounded-lg bg-[#fef2f2] text-[#b91c1c] font-medium">Хроническая усталость</span>
+                <span class="text-[10px] px-2.5 py-1 rounded-lg bg-[#fff7ed] text-[#c2410c] font-medium">Академическая перегрузка</span>
+                <span class="text-[10px] px-2.5 py-1 rounded-lg bg-[#eff4eb] text-[#6c8964] font-semibold">Состояние баланса</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-bold text-[#554363]">Условный индекс стресса (1–10)</span>
+                <span class="text-xs font-bold text-[#8c75b4]">Формула нагрузки</span>
+              </div>
+              <p class="text-[11px] text-[#82758e]">
+                Взвешенная формула объединяет субъективную оценку, дефицит сна (&lt;7 ч), превышение учебных часов (&gt;8 ч), нехватку активности и семантические маркеры.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Screenshot -->
+        <div class="lg:col-span-6 flex justify-center">
+          <div class="screen-frame max-w-md w-full">
+            <div class="frame-bar">
+              <div class="frame-dot bg-[#f87171]"></div>
+              <div class="frame-dot bg-[#fbbf24]"></div>
+              <div class="frame-dot bg-[#34d399]"></div>
+              <span class="text-[10px] text-[#82758e] ml-2">Результат разбора записи и рекомендации</span>
+            </div>
+            <img src="slide3_ml_analysis.png" alt="Разбор записи ML-моделью" class="w-full h-auto object-contain max-h-[520px]">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: АНАЛИТИКА И ДИНАМИКА -->
+    <section class="slide flex-col gap-6" data-slide="4">
+      <div class="flex items-center justify-between border-b border-[#eee6f3] pb-3">
+        <span class="pill-tag bg-[#f1edf7] text-[#8c75b4] border border-[#e2d9ec]">
+          Слайд 04 · Мониторинг динамики и трендов
+        </span>
+        <span class="text-xs text-[#82758e] font-medium">Продольный анализ & Объективные метрики</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left: Analysis Details -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#554363] tracking-tight">
+            Аналитический дашборд: видимый прогресс
+          </h2>
+          <p class="text-xs sm:text-sm text-[#82758e] leading-relaxed">
+            Главная ценность для студента — увидеть, что ситуация меняется к лучшему, а тревожность поддаётся контролю при нормализации режима.
+          </p>
+
+          <div class="space-y-3">
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#554363] mb-1">
+                <span>📈</span> Интерактивная кривая стресса
+              </div>
+              <p class="text-[11px] text-[#82758e]">
+                Сглаженный график за 7/14/30 дней наглядно отражает спад напряжения (на скриншоте: снижение с 8 до 3 баллов за неделю).
+              </p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#554363] mb-1">
+                <span>🌙</span> Анализ корреляции сна и стресса
+              </div>
+              <p class="text-[11px] text-[#82758e]">
+                Средний сон 6.7 ч позволяет студенту осознать прямую связь между отдыхом и работоспособностью.
+              </p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#554363] mb-1">
+                <span>🎯</span> Карточка «Фокус на сегодня»
+              </div>
+              <p class="text-[11px] text-[#82758e]">
+                Антидот против паралича решений: акцент на одной посильной задаче освобождает оперативную память мышления.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Screenshot -->
+        <div class="lg:col-span-7">
+          <div class="screen-frame">
+            <div class="frame-bar">
+              <div class="frame-dot bg-[#f87171]"></div>
+              <div class="frame-dot bg-[#fbbf24]"></div>
+              <div class="frame-dot bg-[#34d399]"></div>
+              <span class="text-[10px] text-[#82758e] ml-2">Дашборд аналитики: статистика и тренды</span>
+            </div>
+            <img src="slide4_dashboard.png" alt="Дашборд динамики и график" class="w-full h-auto object-cover max-h-[460px]">
+          </div>
+          <p class="text-[11px] text-[#82758e] text-center mt-2.5">
+            Рис. 4: Наглядная визуализация снижения индекса стресса на 5 пунктов при регулярном ведении дневника.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: СИСТЕМА ПОВЕДЕНЧЕСКОЙ ПОДДЕРЖКИ -->
+    <section class="slide flex-col gap-6" data-slide="5">
+      <div class="flex items-center justify-between border-b border-[#eee6f3] pb-3">
+        <span class="pill-tag bg-[#f1edf7] text-[#8c75b4] border border-[#e2d9ec]">
+          Слайд 05 · Поведенческая поддержка и интервенции
+        </span>
+        <span class="text-xs text-[#82758e] font-medium">Тактика малых шагов & Психогигиена</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left: Methodology -->
+        <div class="lg:col-span-6 flex flex-col gap-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#554363] tracking-tight">
+            «Твоя опора на сегодня»: персональные рекомендации
+          </h2>
+          <p class="text-xs sm:text-sm text-[#82758e] leading-relaxed">
+            В отличие от абстрактных советов, алгоритм формирует 3 прикладных шага, адаптированных под текущий балл нагрузки и выбранный тон.
+          </p>
+
+          <div class="space-y-3 mt-1">
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg bg-[#f1edf7] text-[#8c75b4] flex items-center justify-center font-bold text-xs shrink-0">1</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#554363]">Запланируй небольшой шаг (Micro-stepping)</h4>
+                <p class="text-[11px] text-[#82758e] mt-0.5">Декомпозиция пугающей учебной задачи на элементарное 15-минутное действие снимает страх начала.</p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg bg-[#f1edf7] text-[#8c75b4] flex items-center justify-center font-bold text-xs shrink-0">2</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#554363]">Сделай паузу без экрана (Digital Detox)</h4>
+                <p class="text-[11px] text-[#82758e] mt-0.5">Короткая смена обстановки и отдых для зрительной коры нормализуют уровень дофамина и снижают утомление.</p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-[#eee6f3] shadow-xs flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg bg-[#f1edf7] text-[#8c75b4] flex items-center justify-center font-bold text-xs shrink-0">3</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#554363]">Заметь, что уже получилось (Positive Reinforcement)</h4>
+                <p class="text-[11px] text-[#82758e] mt-0.5">Фиксация даже минимального завершённого действия формирует чувство академической состоятельности.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-[#eff4eb] border border-[#d4e4cd] text-[#6c8964] text-xs flex items-center gap-2.5">
+            <span>📄</span>
+            <span><strong>Экспорт данных:</strong> студент может в 1 клик выгрузить недельный отчёт в TXT/JSON для работы со школьным психологом или тьютором.</span>
+          </div>
+        </div>
+
+        <!-- Right: Screenshot -->
+        <div class="lg:col-span-6 flex justify-center">
+          <div class="screen-frame max-w-lg w-full">
+            <div class="frame-bar">
+              <div class="frame-dot bg-[#f87171]"></div>
+              <div class="frame-dot bg-[#fbbf24]"></div>
+              <div class="frame-dot bg-[#34d399]"></div>
+              <span class="text-[10px] text-[#82758e] ml-2">Персональные опоры и практические интервенции</span>
+            </div>
+            <div class="p-4 bg-white flex items-center justify-center">
+              <img src="slide5_recommendations.png" alt="Блок рекомендаций Твоя опора" class="w-full h-auto object-contain max-h-[380px]">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: АРХИТЕКТУРА И СТЕК ТЕХНОЛОГИЙ -->
+    <section class="slide flex-col gap-6" data-slide="6">
+      <div class="flex items-center justify-between border-b border-[#eee6f3] pb-3">
+        <span class="pill-tag bg-[#f1edf7] text-[#8c75b4] border border-[#e2d9ec]">
+          Слайд 06 · Архитектура, стек и надёжность
+        </span>
+        <span class="text-xs text-[#82758e] font-medium">Безопасность & Перспективы масштабирования</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left: Architecture Diagram -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#554363] tracking-tight">
+            Архитектура сервиса и стек технологий
+          </h2>
+          <p class="text-xs sm:text-sm text-[#82758e] leading-relaxed">
+            Гибридный технологический стек, сочетающий клиентскую автономность и надёжный облачный бэкенд enterprise-уровня.
+          </p>
+
+          <!-- System Architecture Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-4 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="text-xs font-bold text-[#8c75b4] mb-2 uppercase tracking-wider">Frontend & Client ML</div>
+              <ul class="text-xs space-y-1.5 text-[#554363]">
+                <li class="flex items-center gap-1.5">⚡ <strong>Next.js 16</strong> (App Router)</li>
+                <li class="flex items-center gap-1.5">📘 <strong>TypeScript</strong> & React 19</li>
+                <li class="flex items-center gap-1.5">🎨 <strong>Tailwind CSS</strong> (Light UI)</li>
+                <li class="flex items-center gap-1.5">🧠 <strong>In-Browser ML</strong> (Naive Bayes)</li>
+                <li class="flex items-center gap-1.5">📊 <strong>Recharts</strong> + Zustand</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="text-xs font-bold text-[#8c75b4] mb-2 uppercase tracking-wider">Backend & Cloud</div>
+              <ul class="text-xs space-y-1.5 text-[#554363]">
+                <li class="flex items-center gap-1.5">🦀 <strong>Rust / Axum</strong> API microservice</li>
+                <li class="flex items-center gap-1.5">🐘 <strong>PostgreSQL</strong> (Render Cloud)</li>
+                <li class="flex items-center gap-1.5">🔄 <strong>Двусторонняя синхронизация</strong></li>
+                <li class="flex items-center gap-1.5">🚀 <strong>Zero-downtime</strong> deploy</li>
+                <li class="flex items-center gap-1.5">📦 <strong>Full CI/CD</strong> via Render</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-[#eee6f3] shadow-xs">
+              <div class="text-xs font-bold text-[#8c75b4] mb-2 uppercase tracking-wider">Безопасность & Auth</div>
+              <ul class="text-xs space-y-1.5 text-[#554363]">
+                <li class="flex items-center gap-1.5">🔐 <strong>Google OAuth 2.0</strong></li>
+                <li class="flex items-center gap-1.5">🔑 <strong>HMAC-SHA256</strong> токены</li>
+                <li class="flex items-center gap-1.5">🛡️ <strong>HttpOnly / SameSite</strong> куки</li>
+                <li class="flex items-center gap-1.5">👑 <strong>Ролевая модель</strong> (Admin)</li>
+                <li class="flex items-center gap-1.5">🌐 <strong>Мультиязычность</strong> (RU/KK/EN)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#faf9fc] border border-[#eee6f3] flex items-center justify-between">
+            <span class="text-xs text-[#82758e]">Покрытие тестами:</span>
+            <span class="text-xs font-bold text-[#6c8964] bg-[#eff4eb] px-2.5 py-1 rounded-full border border-[#d4e4cd]">
+              ✓ 22 / 22 автоматических тестов пройдено (Unit, AST, Auth, ML)
+            </span>
+          </div>
+        </div>
+
+        <!-- Right: Future & Impact -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-[#f0eaf7] to-[#fcf5f7] border border-[#e2d9ec] shadow-sm">
+            <h3 class="text-base font-bold text-[#554363] mb-3 flex items-center gap-2">
+              <span>🚀</span> Потенциал внедрения для экспертов
+            </h3>
+            <div class="space-y-3 text-xs text-[#554363]">
+              <div class="flex items-start gap-2.5">
+                <span class="text-[#8c75b4] font-bold text-sm leading-none">•</span>
+                <p><strong>Интеграция с университетскими LMS:</strong> возможность встраивания в Canvas, Moodle или электронные деканаты без раскрытия личных дневников.</p>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <span class="text-[#8c75b4] font-bold text-sm leading-none">•</span>
+                <p><strong>Анонимизированная аналитика факультета:</strong> предиктивное выявление недель максимального стресса для оптимизации расписания дедлайнов.</p>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <span class="text-[#8c75b4] font-bold text-sm leading-none">•</span>
+                <p><strong>Нулевая стоимость масштабирования:</strong> обработка текста на клиентских устройствах позволяет обслуживать десятки тысяч студентов без серверных затрат на LLM-токены.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white border border-[#eee6f3] text-center shadow-xs">
+            <div class="font-bold text-sm text-[#554363]">Готовность к пилотному внедрению</div>
+            <p class="text-[11px] text-[#82758e] mt-1">Репозиторий проекта полностью протестирован, развёрнут и готов к демонстрации.</p>
+            <div class="mt-3 text-xs font-semibold text-[#8c75b4]">
+              StudyFlow · 2026
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM FOOTER -->
+  <footer class="w-full border-t border-[#eee6f3] bg-white/70 px-6 py-3 text-center text-xs text-[#82758e] flex flex-col sm:flex-row items-center justify-between">
+    <span>StudyFlow — Учёба в твоём ритме</span>
+    <span class="text-[11px] mt-1 sm:mt-0">Используйте стрелки на клавиатуре (← / →) или кнопки сверху для переключения</span>
+  </footer>
+
+  <!-- SCRIPT FOR NAVIGATION -->
+  <script>
+    const totalSlides = 6;
+    let currentSlide = 1;
+
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('slideCounter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const dotsContainer = document.getElementById('dotsContainer');
+
+    // Create dot buttons
+    for (let i = 1; i <= totalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.className = `w-2.5 h-2.5 rounded-full transition ${i === 1 ? 'bg-[#8c75b4] w-6' : 'bg-[#d8cfdf] hover:bg-[#8c75b4]/50'}`;
+      dot.onclick = () => goToSlide(i);
+      dot.title = `Перейти к слайду ${i}`;
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateView() {
+      slides.forEach((s, idx) => {
+        if (idx + 1 === currentSlide) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+
+      counter.textContent = `${currentSlide} / ${totalSlides}`;
+      prevBtn.disabled = currentSlide === 1;
+      nextBtn.disabled = currentSlide === totalSlides;
+
+      // Update dots
+      Array.from(dotsContainer.children).forEach((dot, idx) => {
+        if (idx + 1 === currentSlide) {
+          dot.className = 'w-6 h-2.5 rounded-full bg-[#8c75b4] transition';
+        } else {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-[#d8cfdf] hover:bg-[#8c75b4]/50 transition';
+        }
+      });
+    }
+
+    function changeSlide(direction) {
+      const target = currentSlide + direction;
+      if (target >= 1 && target <= totalSlides) {
+        currentSlide = target;
+        updateView();
+      }
+    }
+
+    function goToSlide(slideNum) {
+      if (slideNum >= 1 && slideNum <= totalSlides) {
+        currentSlide = slideNum;
+        updateView();
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.log(err));
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft') {
+        changeSlide(-1);
+      }
+    });
+
+    updateView();
+  </script>
+</body>
+</html>
